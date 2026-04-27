@@ -13,7 +13,6 @@ provider "aws" {
   region = var.aws_region
 }
 module "storage" {
-  source = "../../modules/storage"
-
-  bucket_name = var.bucket_name
+  source        = "../../modules/storage"
+  bucket_prefix = var.bucket_prefix
 }
