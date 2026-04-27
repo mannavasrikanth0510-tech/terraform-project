@@ -14,6 +14,5 @@ provider "aws" {
 }
 module "storage" {
   source = "../../modules/storage"
-
-  bucket_name = var.bucket_name
+  bucket_prefix = var.bucket_prefix
 }
