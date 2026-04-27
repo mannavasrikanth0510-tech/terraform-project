@@ -41,8 +41,10 @@ jobs:
         run: terraform init -input=false
 
       - name: Terraform Plan
-        run: terraform plan -input=false -no-color -out=tfplan
+        run: |
+              terraform plan -input=false -no-color -out=tfplan \
+              -var="aws_region=${{ vars.AWS_REGION }}" \
+              -var="bucket_name=${{ secrets.BUCKET_NAME }}"
 
       - name: Terraform Apply
         run: terraform apply -input=false -auto-approve tfplan
-        
