@@ -1,20 +1,19 @@
 terraform {
-	required_version = ">= 1.6.0"
+  required_version = ">= 1.6.0"
 
-	required_providers {
-		aws = {
-			source  = "hashicorp/aws"
-			version = "~> 5.0"
-		}
-	}
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
 }
 
 provider "aws" {
-	region = var.aws_region
+  region = var.aws_region
 }
-
 module "storage" {
-	source = "../../modules/storage"
+  source = "../../modules/storage"
 
-	bucket_name = var.bucket_name
+  bucket_name = var.bucket_name
 }
