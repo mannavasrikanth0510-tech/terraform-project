@@ -10,7 +10,5 @@ terraform {
 }
 
 resource "aws_s3_bucket" "this" {
-  bucket = "${var.bucket_prefix}-${data.aws_caller_identity.current.account_id}"
+  bucket = var.bucket_prefix
 }
-
-data "aws_caller_identity" "current" {}
