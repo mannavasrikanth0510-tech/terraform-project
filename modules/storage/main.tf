@@ -13,8 +13,8 @@ resource "aws_s3_bucket" "this" {
   bucket = var.bucket_prefix
 }
 
-resource "aws_dynamodb_table" "tf_lock" {
-  name         = "terraform-bucket-locks"
+resource "aws_dynamodb_table" "terraform_locks" {
+  name         = "terraform-locks"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
 
