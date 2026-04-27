@@ -40,6 +40,14 @@ jobs:
       - name: Verify AWS account
         run: aws sts get-caller-identity
 
+      - name: Check BUCKET_PREFIX secret
+        run: |
+          if [ -z "${{ secrets.BUCKET_PREFIX }}" ]; then
+            echo "BUCKET_PREFIX secret is empty/missing"
+            exit 1
+          fi
+          echo "BUCKET_PREFIX is set"
+
       - name: Terraform Init
         run: terraform init -input=false
 
@@ -48,6 +56,9 @@ jobs:
           terraform plan -input=false -no-color -out=tfplan \
           -var="aws_region=us-east-1" \
           -var="bucket_prefix=${{ secrets.BUCKET_PREFIX }}"
+
+      - name: Show planned bucket
+        run: terraform show -no-color tfplan | sed -n '/aws_s3_bucket.this/,+20p'
 
       - name: Terraform Apply
         run: terraform apply -input=false -auto-approve tfplan
