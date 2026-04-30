@@ -42,13 +42,29 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Check BUCKET_PREFIX secret
+      - name: Check required secrets
         run: |
           if [ -z "${{ secrets.BUCKET_PREFIX }}" ]; then
             echo "BUCKET_PREFIX secret is empty/missing"
             exit 1
           fi
-          echo "BUCKET_PREFIX secret is set"
+          if [ -z "${{ secrets.VPC_NAME }}" ]; then
+            echo "VPC_NAME secret is empty/missing"
+            exit 1
+          fi
+          if [ -z "${{ secrets.VPC_CIDR }}" ]; then
+            echo "VPC_CIDR secret is empty/missing"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SUBNET_CIDR }}" ]; then
+            echo "SUBNET_CIDR secret is empty/missing"
+            exit 1
+          fi
+          if [ -z "${{ secrets.AVAILABILITY_ZONE }}" ]; then
+            echo "AVAILABILITY_ZONE secret is empty/missing"
+            exit 1
+          fi
+          echo "All required secrets are set"
 
       - name: Terraform Format Check
         run: terraform fmt -check -recursive ../../
@@ -63,7 +79,11 @@ jobs:
         run: |
           terraform plan -input=false -no-color -out=tfplan \
             -var="aws_region=us-east-1" \
-            -var="bucket_prefix=${{ secrets.BUCKET_PREFIX }}"
+            -var="bucket_prefix=${{ secrets.BUCKET_PREFIX }}" \
+            -var="vpc_name=${{ secrets.VPC_NAME }}" \
+            -var="vpc_cidr=${{ secrets.VPC_CIDR }}" \
+            -var="subnet_cidr=${{ secrets.SUBNET_CIDR }}" \
+            -var="availability_zone=${{ secrets.AVAILABILITY_ZONE }}"
 
       - name: Show planned bucket
         run: terraform show -no-color tfplan | sed -n '/aws_s3_bucket.this/,+20p'
