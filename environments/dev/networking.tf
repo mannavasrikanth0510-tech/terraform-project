@@ -5,3 +5,4 @@ module "networking" {
   subnet_cidr       = var.subnet_cidr
   availability_zone = var.availability_zone
 }
+

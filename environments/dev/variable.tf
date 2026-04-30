@@ -27,3 +27,5 @@ variable "availability_zone" {
   description = "Availability zone for the dev subnet"
   type        = string
 }
+
+
