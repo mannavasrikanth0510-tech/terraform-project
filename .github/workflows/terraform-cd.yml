@@ -40,42 +40,32 @@ jobs:
       - name: Verify AWS account
         run: aws sts get-caller-identity
 
-      - name: Check required secrets
+      - name: Prepare Terraform variables
+        env:
+          INPUT_VPC_NAME: ${{ vars.VPC_NAME }}
+          INPUT_VPC_CIDR: ${{ vars.VPC_CIDR }}
+          INPUT_SUBNET_CIDR: ${{ vars.SUBNET_CIDR }}
+          INPUT_AVAILABILITY_ZONE: ${{ vars.AVAILABILITY_ZONE }}
         run: |
           if [ -z "${{ secrets.BUCKET_PREFIX }}" ]; then
             echo "BUCKET_PREFIX secret is empty/missing"
             exit 1
           fi
-          if [ -z "${{ secrets.VPC_NAME }}" ]; then
-            echo "VPC_NAME secret is empty/missing"
-            exit 1
-          fi
-          if [ -z "${{ secrets.VPC_CIDR }}" ]; then
-            echo "VPC_CIDR secret is empty/missing"
-            exit 1
-          fi
-          if [ -z "${{ secrets.SUBNET_CIDR }}" ]; then
-            echo "SUBNET_CIDR secret is empty/missing"
-            exit 1
-          fi
-          if [ -z "${{ secrets.AVAILABILITY_ZONE }}" ]; then
-            echo "AVAILABILITY_ZONE secret is empty/missing"
-            exit 1
-          fi
-          echo "All required secrets are set"
+
+          echo "TF_VAR_aws_region=us-east-1" >> "$GITHUB_ENV"
+          echo "TF_VAR_bucket_prefix=${{ secrets.BUCKET_PREFIX }}" >> "$GITHUB_ENV"
+          echo "TF_VAR_vpc_name=${INPUT_VPC_NAME:-dev-vpc}" >> "$GITHUB_ENV"
+          echo "TF_VAR_vpc_cidr=${INPUT_VPC_CIDR:-10.0.0.0/16}" >> "$GITHUB_ENV"
+          echo "TF_VAR_subnet_cidr=${INPUT_SUBNET_CIDR:-10.0.1.0/24}" >> "$GITHUB_ENV"
+          echo "TF_VAR_availability_zone=${INPUT_AVAILABILITY_ZONE:-us-east-1a}" >> "$GITHUB_ENV"
+          echo "Terraform variables prepared"
 
       - name: Terraform Init
         run: terraform init -input=false
 
       - name: Terraform Plan
         run: |
-          terraform plan -input=false -no-color -out=tfplan \
-          -var="aws_region=us-east-1" \
-          -var="bucket_prefix=${{ secrets.BUCKET_PREFIX }}" \
-          -var="vpc_name=${{ secrets.VPC_NAME }}" \
-          -var="vpc_cidr=${{ secrets.VPC_CIDR }}" \
-          -var="subnet_cidr=${{ secrets.SUBNET_CIDR }}" \
-          -var="availability_zone=${{ secrets.AVAILABILITY_ZONE }}"
+          terraform plan -input=false -no-color -out=tfplan
 
       - name: Show planned bucket
         run: terraform show -no-color tfplan | sed -n '/aws_s3_bucket.this/,+20p'
