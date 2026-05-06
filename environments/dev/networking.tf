@@ -22,6 +22,3 @@ output "internet_gateway_id" {
   description = "ID of the dev internet gateway"
   value       = module.networking.internet_gateway_id
 }
-
-
-
