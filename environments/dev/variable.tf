@@ -4,8 +4,7 @@ variable "aws_region" {
 }
 
 variable "bucket_name" {
-  description = "Prefix for the S3 bucket name in dev"
-  type        = string
+  type = string
 }
 
 variable "vpc_name" {
