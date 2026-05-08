@@ -55,7 +55,7 @@ jobs:
           fi
 
           echo "TF_VAR_aws_region=us-east-1" >> "$GITHUB_ENV"
-          echo "TF_VAR_bucket_prefix=${{ secrets.BUCKET_PREFIX }}" >> "$GITHUB_ENV"
+          echo "TF_VAR_bucket_name=${{ secrets.BUCKET_PREFIX }}" >> "$GITHUB_ENV"
           echo "TF_VAR_vpc_name=${INPUT_VPC_NAME:-dev-vpc}" >> "$GITHUB_ENV"
           echo "TF_VAR_vpc_cidr=${INPUT_VPC_CIDR:-10.0.0.0/16}" >> "$GITHUB_ENV"
           echo "TF_VAR_subnet_cidr=${INPUT_SUBNET_CIDR:-10.0.1.0/24}" >> "$GITHUB_ENV"

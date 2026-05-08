@@ -10,5 +10,5 @@ terraform {
 }
 
 resource "aws_s3_bucket" "this" {
-  bucket = var.bucket_prefix
+  bucket = var.bucket_name
 }

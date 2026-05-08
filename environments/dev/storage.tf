@@ -1,6 +1,6 @@
 module "storage" {
-  source        = "../../modules/storage"
-  bucket_prefix = var.bucket_prefix
+  source      = "../../modules/storage"
+  bucket_name = var.bucket_name
 }
 
 
